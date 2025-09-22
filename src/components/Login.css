@@ -1,0 +1,60 @@
+
+
+@import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
+
+.bg-dark {
+  background: linear-gradient(135deg, #a1c4fd, #c2e9fb,#fbc2eb);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: gradientShift 10s ease infinite;
+}
+
+.login-card {
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 2rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.login-card:hover {
+  transform: scale(1.02);
+}
+
+@keyframes gradientShift {
+  0% { background: linear-gradient(135deg,  #c2e9fb,#fbc2eb,#a1c4fd,); }
+  50% { background: linear-gradient(135deg, #a1c4fd, #fbc2eb,#fbc2eb); }
+  100% { background: linear-gradient(135deg, #fbc2eb, #c2e9fb,#a1c4fd); }
+}
+
+
+.login-wrapper {
+  padding: 0;
+  margin: 0;
+}
+
+.image-container {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.full-height {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.login-card {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 2rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+

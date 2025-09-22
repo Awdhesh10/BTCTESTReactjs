@@ -1,0 +1,65 @@
+.messaging-wrapper {
+  background: linear-gradient(to right, #a1c4fd, #fbc2eb);
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.section-label {
+  background-color: #e9ecef;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.text-block {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.input-area {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: white;
+}
+#countdown {
+  position: relative;
+  width: 50px;
+  height: 50px;
+}
+
+#countdown-number {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #16071d;
+}
+
+svg {
+  width: 50px;
+  height: 50px;
+  transform: rotate(-90deg);
+}
+
+circle {
+  fill: none;
+  stroke: #4035dc;
+  stroke-width: 4;
+  stroke-dasharray: 113;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1s linear;
+}
+.img-fluids 
+{
+  width: 80px !important;
+  height: 50px !important;
+}
