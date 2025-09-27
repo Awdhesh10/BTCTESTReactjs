@@ -2,46 +2,24 @@ import React, { useState,useEffect }from 'react';
 import './LandingPage.css';
 
 function LandingPage() 
-{
-  const [fontSize, setFontSize] = useState('medium');
-  const sizes = ['small', 'medium', 'large'];
-  const fontSizeMap = {
-    small: '14px',
-    medium: '25px',
-    large: '50px',
-  };
-  const currentIndex = sizes.indexOf(fontSize);
+{ 
+  const [fontSize, setFontSize] = useState(18);
   const increaseSize = () => {
-    if (currentIndex < sizes.length - 1) {
-      setFontSize(sizes[currentIndex + 1]);
-    }
+  setFontSize((prev) => Math.min(prev + 5, 75));
   };
   const decreaseSize = () => {
-    if (currentIndex > 0) {
-      setFontSize(sizes[currentIndex - 1]);
-    }
+    setFontSize((prev) => Math.max(prev - 5, 10));
   };
-
   // Font size for textarea
-  const [fontSizeArea, setFontSizeArea] = useState('medium');
-  const fontSizeMapArea = {
-    small: '14px',
-    medium: '25px',
-    large: '40px',
-  };
+  const [fontSizeArea, setFontSizeArea] = useState(18); 
   const increaseSizeArea = () => {
-    if (fontSizeArea === 'small') setFontSizeArea('medium');
-    else if (fontSizeArea === 'medium') setFontSizeArea('large');
+    setFontSizeArea((prev) => Math.min(prev + 5, 75));
   };
   const decreaseSizeArea = () => {
-    if (fontSizeArea === 'large') setFontSizeArea('medium');
-    else if (fontSizeArea === 'medium') setFontSizeArea('small');
+    setFontSizeArea((prev) => Math.max(prev - 5, 10));    
   };
- //const [time, setTime] = useState(new Date());
-
   const totalTime = 45 * 60; // 45 minutes in seconds
   const [timeLeft, setTimeLeft] = useState(totalTime);
-
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -73,11 +51,10 @@ function LandingPage()
       <div className="d-flex align-items-center gap-3">       
        <div className="d-flex align-items-center gap-2">
       <label className="form-label mb-0">Font Size:</label>
-      <button className="btn btn-outline-secondary btn-sm" onClick={decreaseSize}>−</button>
-      <span className="fw-bold text-primary">{fontSize}</span>
-      <button className="btn btn-outline-secondary btn-sm" onClick={increaseSize}>+</button>
+      <button className="btn btn-danger btn-sm" onClick={decreaseSize}>A−</button>
+      <span className="fw-bold text-primary"></span>
+      <button className="btn btn-success btn-sm" onClick={increaseSize}>A+</button>
     </div>
-
         {/* ⏱ Timer */}
          <div id="countdown">
         <div id="countdown-number">{formatTime(timeLeft)}</div>
@@ -86,14 +63,9 @@ function LandingPage()
         </svg>
       </div>
       </div>
-    </div>
-      
-
-      {/* Section 1 */}
-      {/* <div className="d-flex justify-content-start">
-      <div className="section-label mt-4">Section 1</div>
-      </div> */}
-      <div className="text-block mt-2 justify-content-start" style={{ fontSize: fontSizeMap[fontSize], textAlign: 'left' }}>
+    </div>  
+      <div className="text-block mt-2 justify-content-start" 
+      style={{ fontSize:`${fontSize}px`,textAlign:'left',height:'200px',paddingRight:'10px',overflowY: 'auto' }}>
         <p>
           Everyone reads their texts. We help you send them. Reach large groups with SMS marketing or connect one-on-one with two-way messaging.
           Everyone reads their texts. We help you send them. Reach large groups with SMS marketing or connect one-on-one with two-way messaging.       
@@ -101,17 +73,12 @@ function LandingPage()
           Everyone reads their texts. We help you send them. Reach large groups with SMS marketing or connect one-on-one with two-way messaging.
         </p>
       </div>
-
-      {/* Section 2 */}
-       {/* <div className="d-flex justify-content-start">
-      <div className="section-label">Section 2</div>
-      </div>       */}
       <div className="d-flex justify-content-between align-items-center mb-2">
-        <label className="form-label mb-0 ms-auto">Textarea Font Size:</label>
+        <label className="form-label mb-0 ms-auto">Font Size: </label>
         <div className="d-flex align-items-center gap-2">
-          <button className="btn btn-outline-secondary btn-sm" onClick={decreaseSizeArea}>−</button>
-          <span className="fw-bold text-primary">{fontSizeArea}</span>
-          <button className="btn btn-outline-secondary btn-sm" onClick={increaseSizeArea}>+</button>
+          <button className="btn btn-sm btn-danger" onClick={decreaseSizeArea}>A−</button>
+          <span className="fw-bold text-primary"></span>
+          <button className="btn btn-success btn-sm" onClick={increaseSizeArea}>A+</button>
         </div>
       </div>
 
@@ -119,7 +86,7 @@ function LandingPage()
         className="form-control"
         rows="10"
         placeholder="Type here..."
-        style={{ fontSize: fontSizeMapArea[fontSizeArea], textAlign: 'left' }}
+        style={{ fontSize: `${fontSizeArea}px`, textAlign: 'left',height:'200px',paddingRight:'10px',overflowY: 'auto'  }}
       ></textarea>
     </div>
   );

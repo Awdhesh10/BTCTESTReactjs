@@ -1,14 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Login.css';
 import { useNavigate } from 'react-router-dom';
-function Login() {
+import API from './authService';
+
+function Login() 
+{
+  const [formData, setFormData] = useState({
+    Mobile_No: '',    
+    password:  '',   
+    org_id:48,     
+  });
+  const [errorMsg, setErrorMsg] = useState('');
   const navigate = useNavigate();
-  const handleLogin = (e) => {
-    e.preventDefault();
-    // TODO: Add validation or API call here
-    // Redirect to landing page
-    navigate('/landing');
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrorMsg(''); // clear error on input change
   };
+ const handleLogin = async (e) => {
+  e.preventDefault();
+
+  const data = new URLSearchParams();
+  Object.entries(formData).forEach(([key, value]) => {
+    data.append(key, value);
+  });
+
+  try {
+    const response = await API.post('/oauth/studenttoken', data);
+    const resData = response.data;
+
+    // ✅ Check for status and token
+    if (resData.status === 1 && resData.idToken?.access_token) {
+      localStorage.setItem('token', resData.idToken.access_token);
+      navigate('/landing');
+    } else {
+      setErrorMsg('Invalid userid or password.');
+    }
+  } catch (error) {
+    const message = error.response?.data?.message || 'Login failed. Please try again.';
+    setErrorMsg(message);
+  }
+};
   return (
       <div className="container-fluid login-wrapper">
       <div className="row vh-100">
@@ -25,13 +57,21 @@ function Login() {
             <h3 className="text-center mb-4 text-light">Welcome to Login</h3>
             <form onSubmit={handleLogin}>
               <div className="form-floating mb-3">
-                <input type="email" className="form-control" id="floatingEmail" placeholder="name@example.com" />
-                <label htmlFor="floatingEmail">Email address</label>
+                <input type="text" className="form-control" id="floatinguser"  name="Mobile_No"
+                  value={formData.Mobile_No}
+                  onChange={handleChange}
+                  autoComplete="off"
+                  placeholder="Enter User Id" />
+                <label htmlFor="floatinguser">Enter User Id</label>
               </div>
               <div className="form-floating mb-3">
-                <input type="password" className="form-control" id="floatingPassword" placeholder="Password" />
+                <input type="password" className="form-control" id="floatingPassword" name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Enter Password" autoComplete="off"/>
                 <label htmlFor="floatingPassword">Password</label>
               </div>
+              {errorMsg && <div className="text-danger mb-3 text-center">{errorMsg}</div>}
               <button type="submit" className="btn btn-warning w-100">Login</button>
             </form>
             <p className="text-center mt-3 text-light">
