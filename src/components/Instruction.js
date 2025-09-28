@@ -7,7 +7,7 @@ function Instruction() {
   const lastName = localStorage.getItem('last_name') || '';
   const companyname = localStorage.getItem('companyname') || '';
   const fullName = `${firstName} ${lastName}`.trim(); 
-  const RollNo = localStorage.getItem('role_code') || '';
+  const RollNo = localStorage.getItem('id') || '';
   const handleStartClick = () => {
     navigate('/landing');
   };
@@ -22,11 +22,13 @@ function Instruction() {
 
     {/* User Info */}
     <div className="col-12 col-md-2 d-flex justify-content-center justify-content-md-start align-items-center mb-2 mb-md-0">
-      <img src="/image/profile.jpg" alt="User Icon" className="user-icon me-2" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
-      <div>
-        <p className="mb-0">Name: <strong>{fullName}</strong></p>
-        <p className="mb-0">Roll No: <strong>{RollNo}</strong></p>
-      </div>
+        <div className="user-info d-flex align-items-center text-start">
+            <img src="/image/profile.jpg" alt="User Icon" className="user-icon me-3"/>            
+            <div>
+              <p className="mb-0">Name: <strong>{fullName}</strong></p>
+              <p className="mb-0">Roll No: <strong>{RollNo}</strong></p>
+            </div>
+          </div> 
     </div>
 
     {/* Logo */}

@@ -15,7 +15,7 @@ function LandingPage()
   const lastName = localStorage.getItem('last_name') || '';
   const companyname = localStorage.getItem('companyname') || '';
   const fullName = `${firstName} ${lastName}`.trim(); 
-  const RollNo = localStorage.getItem('role_code') || '';
+  const RollNo = String(localStorage.getItem('id') || '');
   const org_id=String(localStorage.getItem('org_id') || '48'); 
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,23 +30,26 @@ function LandingPage()
       org_id: org_id,
       created_by: org_id 
   };
-   const data = new URLSearchParams();
+  const data = new URLSearchParams();
   data.append("spName", "usp_Save_CBT_Desciption");
   data.append("payload", JSON.stringify(param));
-
+  const data1 = {
+    spName: "usp_Save_CBT_Desciption",
+    payload: JSON.stringify(param)
+  };
+  console.log("Request Data:", data1); // Log the request data for debugging
   try {
-    const response = await Global.post('/Global/GetDataFromServer', data);
-
-    if (response.data.status === 1 && response.data.list?.length > 0) {
-      const return_value = response.data.list[0].parameterValue;
-      const status = return_value.split(',')[0];
-
-      if (status === "success") {
+    debugger;
+    const response = await Global.post('/Global/GetDataFromServer', data1);
+    debugger;
+    console.log("Response Data:", response.data); // Log the response data for debugging
+    if (response.data.status === 1) {   
+         if (response.status === 200) {
         alert("✅ CBT Description saved successfully.");
-      } else if (status === "alreadyexist") {
+      } else if (response.status === "alreadyexist") {
         alert("⚠️ Duplicate entry. Please try again.");
       } else {
-        alert("❌ Unexpected response: " + return_value);
+        alert("❌ Unexpected response: ");
       }
     } else {
       alert("❌ Server returned no usable data.");
@@ -147,7 +150,7 @@ function LandingPage()
      </div>
       <div className="row p-3">
             <div className="text-block mt-2 justify-content-start" 
-      style={{fontSize:`${fontSize}px`,textAlign:'left',height:'200px',paddingRight:'10px',overflowY: 'auto',fontFamily: selectedFont,fontFamily: selectedFont, userSelect: 'none',pointerEvents:'none'}}>
+      style={{fontSize:`${fontSize}px`,textAlign:'left',height:'300px',paddingRight:'10px',overflowY: 'auto',fontFamily: selectedFont,fontFamily: selectedFont, userSelect: 'none',pointerEvents:'none'}}>
         <p>
           Everyone reads their texts. We help you send them. Reach large groups with SMS marketing or connect one-on-one with two-way messaging.
           Everyone reads their texts. We help you send them. Reach large groups with SMS marketing or connect one-on-one with two-way messaging.       
@@ -171,7 +174,7 @@ function LandingPage()
         rows="10"
         placeholder="Type here..."  value={text}
         onChange={(e) => setText(e.target.value)}
-        style={{ fontSize: `${fontSizeArea}px`, textAlign: 'left',height:'200px',overflowY: 'auto',fontFamily: selectedFont  }}
+        style={{ fontSize: `${fontSizeArea}px`, textAlign: 'left',height:'350px',overflowY: 'auto',fontFamily: selectedFont  }}
       ></textarea>
      
     <div className="text-center mt-3  mb-3">

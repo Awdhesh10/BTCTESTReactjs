@@ -35,12 +35,11 @@ function Login()
     // ✅ Check for status and token
     if (resData.status === 1 && resData.idToken?.access_token) {
       localStorage.setItem('token', resData.idToken.access_token);
-       const { first_name, last_name, companyname} = resData.student;
-       const { role_code} = resData.user;
+       const { first_name, last_name, companyname,id} = resData.student;     
        localStorage.setItem('first_name', first_name || '');
        localStorage.setItem('last_name', last_name || '');
-        localStorage.setItem('companyname', companyname || '');
-       localStorage.setItem('role_code', role_code || '');
+       localStorage.setItem('companyname', companyname || '');
+       localStorage.setItem('id', id || '');
        navigate('/Instruction');
     } else {
       setErrorMsg('Invalid userid or password.');
