@@ -1,25 +1,28 @@
 import React, { useState } from 'react';
 import './Login.css';
 import { useNavigate } from 'react-router-dom';
-import API from './authService';
+import {API} from './authService';
 
 function Login() 
 {
   const [formData, setFormData] = useState({
     Mobile_No: '',    
     password:  '',   
-    org_id:48,     
+    org_id:String(localStorage.getItem('org_id') || '48'),     
   });
   const [errorMsg, setErrorMsg] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });   
     setErrorMsg(''); // clear error on input change
   };
  const handleLogin = async (e) => {
+  debugger;
   e.preventDefault();
-
+  setLoading(true);
+  setErrorMsg('');
   const data = new URLSearchParams();
   Object.entries(formData).forEach(([key, value]) => {
     data.append(key, value);
@@ -28,17 +31,26 @@ function Login()
   try {
     const response = await API.post('/oauth/studenttoken', data);
     const resData = response.data;
-
+    console.log('Login response:', resData);
     // ✅ Check for status and token
     if (resData.status === 1 && resData.idToken?.access_token) {
       localStorage.setItem('token', resData.idToken.access_token);
-      navigate('/landing');
+       const { first_name, last_name, companyname} = resData.student;
+       const { role_code} = resData.user;
+       localStorage.setItem('first_name', first_name || '');
+       localStorage.setItem('last_name', last_name || '');
+        localStorage.setItem('companyname', companyname || '');
+       localStorage.setItem('role_code', role_code || '');
+       navigate('/Instruction');
     } else {
       setErrorMsg('Invalid userid or password.');
     }
   } catch (error) {
     const message = error.response?.data?.message || 'Login failed. Please try again.';
     setErrorMsg(message);
+  }
+  finally {
+      setLoading(false);
   }
 };
   return (
@@ -72,7 +84,25 @@ function Login()
                 <label htmlFor="floatingPassword">Password</label>
               </div>
               {errorMsg && <div className="text-danger mb-3 text-center">{errorMsg}</div>}
-              <button type="submit" className="btn btn-warning w-100">Login</button>
+                <button
+                      type="submit"
+                      className="btn btn-warning w-100"
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <span>
+                          <span
+                            className="spinner-border spinner-border-sm me-2 text-white" 
+                            role="status"
+                            aria-hidden="true"
+                          ></span>
+                          Logging in...
+                        </span>
+                      ) : (
+                        'Login'
+                      )}
+              </button>
+              {/* <button type="submit" className="btn btn-warning w-100">Login</button> */}
             </form>
             <p className="text-center mt-3 text-light">
               Don't have an account? <a href="#" className="text-decoration-none text-warning">Sign up</a>

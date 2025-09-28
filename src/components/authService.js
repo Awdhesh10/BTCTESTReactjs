@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API = axios.create({
+export const API = axios.create({
   baseURL: 'https://api.learn24x7.io/api',
   headers: {  
     'scope-header': 'x-auth-request',
@@ -8,7 +8,11 @@ const API = axios.create({
     'con':'_OnlineExam',   
   }
 });
-
-export default API;
-
-
+export const Global = axios.create({
+  baseURL: 'https://api.learn24x7.io/api',
+  headers: {        
+     'scope-header': 'x-get-request',
+     'Content-Type': 'application/json',
+     'con':'_OnlineExam', 
+  } 
+});
