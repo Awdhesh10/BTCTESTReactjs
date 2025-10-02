@@ -1,0 +1,10 @@
+.wrapper {
+  background: linear-gradient(to right, #a1c4fd, #fbc2eb);
+  min-height: 100vh; 
+}
+.user-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}

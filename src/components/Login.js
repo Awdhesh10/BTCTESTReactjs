@@ -103,9 +103,9 @@ function Login()
               </button>
               {/* <button type="submit" className="btn btn-warning w-100">Login</button> */}
             </form>
-            <p className="text-center mt-3 text-light">
+            {/* <p className="text-center mt-3 text-light">
               Don't have an account? <a href="#" className="text-decoration-none text-warning">Sign up</a>
-            </p>
+            </p> */}
           </div>
         </div>
       </div>

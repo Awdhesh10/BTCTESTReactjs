@@ -4,6 +4,7 @@ import Login from './components/Login';
 import { Routes, Route } from 'react-router-dom';
 import LandingPage from './components/LandingPage';
 import Instruction from './components/Instruction';
+import UserTypingDetails from 'components/UserTypingDetails';
 function App() {
   return (
     <div className="App">
@@ -11,6 +12,7 @@ function App() {
          <Route path="/" element={<Login />} />
          <Route path="/Instruction" element={<Instruction />} />
          <Route path="/landing" element={<LandingPage />} />
+         <Route path="/nextpage" element={<UserTypingDetails />} />
        </Routes>
     </div>
   );

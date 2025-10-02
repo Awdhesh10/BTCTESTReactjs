@@ -1,6 +1,7 @@
-import React, { useState,useEffect }from 'react';
+import React, { useState,useEffect,useRef }from 'react';
 import './LandingPage.css';
 import {Global} from './authService';
+import { useNavigate } from 'react-router-dom';
 const fontOptions = [
   { label: 'Roboto', value: 'Roboto', style: { fontFamily: 'Roboto, sans-serif' } },
   { label: 'Courier New', value: 'Courier New', style: { fontFamily: 'Courier New, monospace' } },
@@ -19,33 +20,30 @@ function LandingPage()
   const org_id=String(localStorage.getItem('org_id') || '48'); 
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
-   const handleSavetext = async (e) => {
-    debugger;
-    e.preventDefault();
-    setLoading(true);  
+  const navigate = useNavigate();
+  const formRef = useRef(null);
+  const handleSavetext = async (e) => {   
+  debugger
+    if (e?.preventDefault) e.preventDefault();  
+   setLoading(true);  
    const param = {
       description: text,
       rollcode: RollNo,
       fullname: fullName,
       org_id: org_id,
       created_by: org_id 
-  };
-  const data = new URLSearchParams();
-  data.append("spName", "usp_Save_CBT_Desciption");
-  data.append("payload", JSON.stringify(param));
-  const data1 = {
-    spName: "usp_Save_CBT_Desciption",
+  };  
+  const data = {
+    spName: "usp_SaveUser_Typeing_Details",
     payload: JSON.stringify(param)
-  };
-  console.log("Request Data:", data1); // Log the request data for debugging
-  try {
-    debugger;
-    const response = await Global.post('/Global/GetDataFromServer', data1);
-    debugger;
-    console.log("Response Data:", response.data); // Log the response data for debugging
+  };  
+  try {    
+    const response = await Global.post('/Global/GetDataFromServer', data);    
+    console.log("Response Data:", response.data); 
     if (response.data.status === 1) {   
-         if (response.status === 200) {
-        alert("✅ CBT Description saved successfully.");
+      if (response.status === 200) {
+        //alert("✅Saved successfully.");
+        navigate('/nextpage');
       } else if (response.status === "alreadyexist") {
         alert("⚠️ Duplicate entry. Please try again.");
       } else {
@@ -77,21 +75,24 @@ function LandingPage()
   const decreaseSizeArea = () => {
     setFontSizeArea((prev) => Math.max(prev - 5, 10));    
   };
-  const totalTime = 45 * 60; // 45 minutes in seconds
+  const totalTime = 2 * 60; // 45 minutes in seconds
   const [timeLeft, setTimeLeft] = useState(totalTime);
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          alert("Time's up!");
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+   useEffect(() => {
+     const timer = setInterval(() => {
+       setTimeLeft((prev) => {
+         if (prev <= 1) {
+           clearInterval(timer); 
+           handleSavetext();
+           if (formRef.current) {
+            formRef.current.requestSubmit(); // ✅ Simulates button click
+           } 
+           return 0;
+         }
+         return prev - 1;
+       });
+     }, 1000);
+     return () => clearInterval(timer);
+   }, []);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -150,7 +151,8 @@ function LandingPage()
      </div>
       <div className="row p-3">
             <div className="text-block mt-2 justify-content-start" 
-      style={{fontSize:`${fontSize}px`,textAlign:'left',height:'300px',paddingRight:'10px',overflowY: 'auto',fontFamily: selectedFont,fontFamily: selectedFont, userSelect: 'none',pointerEvents:'none'}}>
+      style={{fontSize:`${fontSize}px`,textAlign:'left',height:'300px',paddingRight:'10px',overflowY: 'auto',fontFamily: selectedFont,fontFamily: selectedFont, userSelect: 'none',
+      }}>
         <p>
           Everyone reads their texts. We help you send them. Reach large groups with SMS marketing or connect one-on-one with two-way messaging.
           Everyone reads their texts. We help you send them. Reach large groups with SMS marketing or connect one-on-one with two-way messaging.       
@@ -168,15 +170,24 @@ function LandingPage()
           <button className="btn btn-success btn-sm" onClick={increaseSizeArea}>A+</button>
         </div>
       </div> 
-       <form onSubmit={handleSavetext}>
-        <textarea
+      <form ref={formRef} onSubmit={handleSavetext}>
+  <textarea
         className="form-control"
         rows="10"
-        placeholder="Type here..."  value={text}
+        placeholder="Type here..."  value={text}        
         onChange={(e) => setText(e.target.value)}
         style={{ fontSize: `${fontSizeArea}px`, textAlign: 'left',height:'350px',overflowY: 'auto',fontFamily: selectedFont  }}
       ></textarea>
-     
+</form>
+       {/* <form onSubmit={handleSavetext}>
+        <textarea
+        className="form-control"
+        rows="10"
+        placeholder="Type here..."  value={text}        
+        onChange={(e) => setText(e.target.value)}
+        style={{ fontSize: `${fontSizeArea}px`, textAlign: 'left',height:'350px',overflowY: 'auto',fontFamily: selectedFont  }}
+      ></textarea>
+   
     <div className="text-center mt-3  mb-3">
         <button type="submit" className="btn btn-primary px-4 d-block mx-auto" disabled={loading}>
           {loading ? (
@@ -191,9 +202,10 @@ function LandingPage()
           ) : (
             'Save'
           )}
-        </button>         
-      </div> 
-       </form>  
+        </button> 
+                
+      </div>  
+          </form>  */}
       </div>  
    </div>   
   );
