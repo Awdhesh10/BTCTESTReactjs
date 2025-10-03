@@ -74,6 +74,7 @@ function Login()
                   autoComplete="off"
                   placeholder="Enter User Id" />
                 <label htmlFor="floatinguser">Enter User Id</label>
+               
               </div>
               <div className="form-floating mb-3">
                 <input type="password" className="form-control" id="floatingPassword" name="password"
@@ -81,6 +82,7 @@ function Login()
                   onChange={handleChange}
                   placeholder="Enter Password" autoComplete="off"/>
                 <label htmlFor="floatingPassword">Password</label>
+                 <span className="text-danger">UserID:-STU45033 <br></br>Password:-123456</span>                
               </div>
               {errorMsg && <div className="text-danger mb-3 text-center">{errorMsg}</div>}
                 <button

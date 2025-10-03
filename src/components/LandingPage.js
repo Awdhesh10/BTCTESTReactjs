@@ -43,7 +43,7 @@ function LandingPage()
     if (response.data.status === 1) {   
       if (response.status === 200) {
         //alert("✅Saved successfully.");
-        navigate('/nextpage');
+        navigate('/typingdetails');
       } else if (response.status === "alreadyexist") {
         alert("⚠️ Duplicate entry. Please try again.");
       } else {

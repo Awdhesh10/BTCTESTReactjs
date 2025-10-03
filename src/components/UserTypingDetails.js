@@ -1,13 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './UserTypingDetails.css';
 import { useNavigate } from 'react-router-dom';
+import {Global} from './authService';
 function UserTypingDetails() {
   const navigate = useNavigate();
   const firstName = localStorage.getItem('first_name') || 'User';
   const lastName = localStorage.getItem('last_name') || '';
   const companyname = localStorage.getItem('companyname') || '';
-  const fullName = `${firstName} ${lastName}`.trim(); 
-  const RollNo = localStorage.getItem('id') || ''; 
+  const fullName = `${firstName} ${lastName}`.trim();
+  const RollNo = String(localStorage.getItem('id') || '');
+  const org_id=String(localStorage.getItem('org_id') || '48'); 
+  const [typingDetails, setTypingDetails] = useState([]);
+  const [loading, setLoading] = useState(false);
+   const GetDataTyping = async () => {
+    debugger;
+    setLoading(true);
+    const param = {
+      rollcode: RollNo,
+      org_id: org_id
+    };
+    const data = {
+      spName: "usp_get_Typeing_Details",
+      payload: JSON.stringify(param)
+    };
+    try {
+      const response = await Global.post('/Global/GetDataFromServer', data);     
+      const tableData = response.data.data.dataset.table;
+      if (response.data.status === 1 && Array.isArray(tableData)) 
+      {
+        setTypingDetails(tableData);
+      } else {
+        alert("❌ Server returned no usable data.");
+      }
+    } catch (error) {
+      console.error("Error during fetch:", error);
+      alert("❌ Request failed: " + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    GetDataTyping();
+  }, []);
+
   return (  
   <div className="container-fluid wrapper">
   {/* Header Row */}
@@ -39,9 +75,22 @@ function UserTypingDetails() {
     <div className="card-header text-start fw-bold">
       User Typeing Details
     </div>
-    <div className="card-body">
-        comming soon..
-    </div>  
+ <div className="card-body">
+  {loading ? (
+    <p>Loading...</p>
+  ) : typingDetails.length > 0 ? (
+    <>
+      {typingDetails.map((item, index) => (
+        <div key={index} className='text-start mb-3'>
+          <p style={{fontSize:18}}>{item.description}</p>
+        </div>
+      ))}
+    </>
+  ) : (
+    <p>No typing details found.</p>
+  )}
+</div>
+
   </div>
 </div>
 
