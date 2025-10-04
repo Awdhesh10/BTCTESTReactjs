@@ -44,56 +44,62 @@ function UserTypingDetails() {
     GetDataTyping();
   }, []);
 
-  return (  
-  <div className="container-fluid wrapper">
-  {/* Header Row */}
-  <div className="row bg-info text-white align-items-center py-3">
-    {/* Company Name */}
-    <div className="col-12 col-md-9 text-center text-md-start mb-2 mb-md-0">
-      <h1 className="fw-bold">{companyname}</h1>
-    </div>
+  // Print handler
+  const handlePrint = () => {
+    window.print();
+  };
 
-    {/* User Info */}
-    <div className="col-12 col-md-2 d-flex justify-content-center justify-content-md-start align-items-center mb-2 mb-md-0">
-        <div className="user-info d-flex align-items-center text-start">
+  return (  
+    <div className="container-fluid wrapper">
+      {/* Header Row */}
+      <div className="row bg-info text-white align-items-center py-3">
+        {/* Company Name */}
+        <div className="col-12 col-md-9 text-center text-md-start mb-2 mb-md-0">
+          <h1 className="fw-bold">{companyname}</h1>
+        </div>
+
+        {/* User Info */}
+        <div className="col-12 col-md-2 d-flex justify-content-center justify-content-md-start align-items-center mb-2 mb-md-0">
+          <div className="user-info d-flex align-items-center text-start">
             <img src="/image/profile.jpg" alt="User Icon" className="user-icon me-3"/>            
             <div>
               <p className="mb-0">Name: <strong>{fullName}</strong></p>
               <p className="mb-0">Roll No: <strong>{RollNo}</strong></p>
             </div>
           </div> 
-    </div>
-
-    {/* Logo */}
-    <div className="col-12 col-md-1 text-center text-md-end">
-      <img src="/image/Test-Logo.png" alt="Logo" className="img-fluid" style={{ maxHeight: '50px' }} />
-    </div>
-  </div>
-
-  {/* Instruction Card */}
-  <div className="card mt-4">
-    <div className="card-header text-start fw-bold">
-      User Typeing Details
-    </div>
- <div className="card-body">
-  {loading ? (
-    <p>Loading...</p>
-  ) : typingDetails.length > 0 ? (
-    <>
-      {typingDetails.map((item, index) => (
-        <div key={index} className='text-start mb-3'>
-          <p style={{fontSize:18}}>{item.description}</p>
         </div>
-      ))}
-    </>
-  ) : (
-    <p>No typing details found.</p>
-  )}
-</div>
 
-  </div>
-</div>
+        {/* Logo */}
+        <div className="col-12 col-md-1 text-center text-md-end">
+          <img src="/image/Test-Logo.png" alt="Logo" className="img-fluid" style={{ maxHeight: '50px' }} />
+        </div>
+      </div>
 
+      {/* Instruction Card */}
+      <div className="card mt-4">
+        <div className="card-header text-start fw-bold d-flex justify-content-between align-items-center">
+          <span>User Typeing Details</span>
+          <button className="btn btn-primary btn-sm" onClick={handlePrint}>
+            Print
+          </button>
+        </div>
+        <div className="card-body">
+          {loading ? (
+            <p>Loading...</p>
+          ) : typingDetails.length > 0 ? (
+            <>
+              {typingDetails.map((item, index) => (
+                <div key={index} className='text-start mb-3'>
+                  <p style={{fontSize:18}}>{item.description}</p>
+                </div>
+              ))}
+            </>
+          ) : (
+            <p>No typing details found.</p>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 

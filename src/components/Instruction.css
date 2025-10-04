@@ -1,10 +1,21 @@
 .wrapper {
   background: linear-gradient(to right, #a1c4fd, #fbc2eb);
-  min-height: 100vh; 
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding: 0 15px; /* Mobile breathing room */
 }
-.user-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
+@media (min-width: 576px) {
+  .wrapper {
+    padding: 0 30px; /* Increased padding for larger screens */
+  }
+}
+.user-icon,
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Flex wrap for tight spaces */
+.user-info {
+  flex-wrap: wrap;
 }

@@ -19,7 +19,6 @@ function Login()
     setErrorMsg(''); // clear error on input change
   };
  const handleLogin = async (e) => {
-  debugger;
   e.preventDefault();
   setLoading(true);
   setErrorMsg('');

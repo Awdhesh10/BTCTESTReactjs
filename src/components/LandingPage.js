@@ -2,6 +2,7 @@ import React, { useState,useEffect,useRef }from 'react';
 import './LandingPage.css';
 import {Global} from './authService';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 const fontOptions = [
   { label: 'Roboto', value: 'Roboto', style: { fontFamily: 'Roboto, sans-serif' } },
   { label: 'Courier New', value: 'Courier New', style: { fontFamily: 'Courier New, monospace' } },
@@ -22,47 +23,69 @@ function LandingPage()
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const formRef = useRef(null);
+
+  const [timerStarted, setTimerStarted] = useState(false);
+
+  // Start and End time states
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
+
+  useEffect(() => {
+    Swal.fire({
+      title: 'Welcome!',
+      text: 'Press OK to start your typing test.',
+      icon: 'info',
+      confirmButtonText: 'OK'
+    }).then(() => {
+      setTimerStarted(true);
+      setStartTime(new Date().toISOString()); // Set start time
+    });
+  }, []);
+
   const handleSavetext = async (e) => {   
-  debugger
+    debugger; 
     if (e?.preventDefault) e.preventDefault();  
-   setLoading(true);  
-   const param = {
+    setLoading(true);  
+    const param = {
       description: text,
       rollcode: RollNo,
       fullname: fullName,
       org_id: org_id,
-      created_by: org_id 
-  };  
-  const data = {
-    spName: "usp_SaveUser_Typeing_Details",
-    payload: JSON.stringify(param)
-  };  
-  try {    
-    const response = await Global.post('/Global/GetDataFromServer', data);    
-    console.log("Response Data:", response.data); 
-    if (response.data.status === 1) {   
-      if (response.status === 200) {
-        //alert("✅Saved successfully.");
-        navigate('/typingdetails');
-      } else if (response.status === "alreadyexist") {
-        alert("⚠️ Duplicate entry. Please try again.");
+      created_by: org_id,
+      starttime: startTime,
+      endtime: endTime || new Date().toISOString() // Use endTime or current time
+    };  
+    const data = {
+      spName: "usp_SaveUser_Typeing_Details",
+      payload: JSON.stringify(param)
+    };  
+    try {    
+      const response = await Global.post('/Global/GetDataFromServer', data);    
+      console.log("Response Data:", response.data); 
+      if (response.data.status === 1) {   
+        if (response.status === 200) {
+          //alert("✅Saved successfully.");
+          navigate('/typingdetails');
+        } else if (response.status === "alreadyexist") {
+          alert("⚠️ Duplicate entry. Please try again.");
+        } else {
+          alert("❌ Unexpected response: ");
+        }
       } else {
-        alert("❌ Unexpected response: ");
+        alert("❌ Server returned no usable data.");
       }
-    } else {
-      alert("❌ Server returned no usable data.");
+    } catch (error) {
+      console.error("Error during save:", error);
+      alert("❌ Request failed: " + error.message);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Error during save:", error);
-    alert("❌ Request failed: " + error.message);
-  } finally {
-    setLoading(false);
-  }
   };
+
   const [selectedFont, setSelectedFont] = useState(fontOptions[0].value);
   const [fontSize, setFontSize] = useState(18);
   const increaseSize = () => {
-  setFontSize((prev) => Math.min(prev + 5, 75));
+    setFontSize((prev) => Math.min(prev + 5, 75));
   };
   const decreaseSize = () => {
     setFontSize((prev) => Math.max(prev - 5, 10));
@@ -75,24 +98,27 @@ function LandingPage()
   const decreaseSizeArea = () => {
     setFontSizeArea((prev) => Math.max(prev - 5, 10));    
   };
-  const totalTime = 2 * 60; // 45 minutes in seconds
+  const totalTime = 2 * 60; // 2 minutes in seconds
   const [timeLeft, setTimeLeft] = useState(totalTime);
-   useEffect(() => {
-     const timer = setInterval(() => {
-       setTimeLeft((prev) => {
-         if (prev <= 1) {
-           clearInterval(timer); 
-           handleSavetext();
-           if (formRef.current) {
+
+  useEffect(() => {
+    if (!timerStarted) return;
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer); 
+          setEndTime(new Date().toISOString()); // Set end time
+          handleSavetext();
+          if (formRef.current) {
             formRef.current.requestSubmit(); // ✅ Simulates button click
-           } 
-           return 0;
-         }
-         return prev - 1;
-       });
-     }, 1000);
-     return () => clearInterval(timer);
-   }, []);
+          } 
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [timerStarted]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -151,7 +177,7 @@ function LandingPage()
      </div>
       <div className="row p-3">
             <div className="text-block mt-2 justify-content-start" 
-      style={{fontSize:`${fontSize}px`,textAlign:'left',height:'300px',paddingRight:'10px',overflowY: 'auto',fontFamily: selectedFont,fontFamily: selectedFont, userSelect: 'none',
+      style={{fontSize:`${fontSize}px`,textAlign:'left',height:'300px',paddingRight:'10px',overflowY: 'auto', overflowX:'auto',fontFamily: selectedFont,fontFamily: selectedFont, userSelect: 'none',
       }}>
         <p>
           Everyone reads their texts. We help you send them. Reach large groups with SMS marketing or connect one-on-one with two-way messaging.
@@ -176,36 +202,14 @@ function LandingPage()
         rows="10"
         placeholder="Type here..."  value={text}        
         onChange={(e) => setText(e.target.value)}
-        style={{ fontSize: `${fontSizeArea}px`, textAlign: 'left',height:'350px',overflowY: 'auto',fontFamily: selectedFont  }}
+        style={{ fontSize: `${fontSizeArea}px`, textAlign: 'left',height:'350px',overflowX:'auto',overflowY: 'auto',fontFamily: selectedFont  }}
       ></textarea>
-</form>
-       {/* <form onSubmit={handleSavetext}>
-        <textarea
-        className="form-control"
-        rows="10"
-        placeholder="Type here..."  value={text}        
-        onChange={(e) => setText(e.target.value)}
-        style={{ fontSize: `${fontSizeArea}px`, textAlign: 'left',height:'350px',overflowY: 'auto',fontFamily: selectedFont  }}
-      ></textarea>
-   
-    <div className="text-center mt-3  mb-3">
-        <button type="submit" className="btn btn-primary px-4 d-block mx-auto" disabled={loading}>
-          {loading ? (
-            <span>
-              <span
-                className="spinner-border spinner-border-sm me-2 text-white"
-                role="status"
-                aria-hidden="true"
-              ></span>
-              Logging in...
-            </span>
-          ) : (
-            'Save'
-          )}
-        </button> 
-                
-      </div>  
-          </form>  */}
+</form>     
+      {/* Show Start and End Time for reference */}
+      <div className="mt-3">
+        <div>Start Time: <span className="text-success">{startTime ? new Date(startTime).toLocaleString() : '--'}</span></div>
+        <div>End Time: <span className="text-danger">{endTime ? new Date(endTime).toLocaleString() : '--'}</span></div>
+      </div>
       </div>  
    </div>   
   );

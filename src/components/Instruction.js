@@ -9,7 +9,7 @@ function Instruction() {
   const fullName = `${firstName} ${lastName}`.trim(); 
   const RollNo = localStorage.getItem('id') || '';
   const handleStartClick = () => {
-    navigate('/landing');
+    navigate('/Keyboardtest');
   };
   return (  
   <div className="container-fluid wrapper">
@@ -64,6 +64,6 @@ function Instruction() {
 </div>
 
   );
-}
+} 
 
 export default Instruction;

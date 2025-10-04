@@ -5,12 +5,14 @@ import { Routes, Route } from 'react-router-dom';
 import LandingPage from './components/LandingPage';
 import Instruction from './components/Instruction';
 import UserTypingDetails from 'components/UserTypingDetails';
+import TypingTest from 'components/TypepingTest';
 function App() {
   return (
     <div className="App">
        <Routes>
          <Route path="/" element={<Login />} />
          <Route path="/Instruction" element={<Instruction />} />
+         <Route path="/Keyboardtest" element={<TypingTest />} />
          <Route path="/landing" element={<LandingPage />} />
          <Route path="/typingdetails" element={<UserTypingDetails />} />
        </Routes>
