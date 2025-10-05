@@ -30,6 +30,12 @@ function LandingPage()
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
 
+  // Store latest text value for timer auto-save
+  const textRef = useRef(text);
+  useEffect(() => {
+    textRef.current = text;
+  }, [text]);
+
   useEffect(() => {
     Swal.fire({
       title: 'Welcome!',
@@ -42,12 +48,11 @@ function LandingPage()
     });
   }, []);
 
-  const handleSavetext = async (e) => {   
-    debugger; 
+  const handleSavetext = async (e, forcedText) => {   
     if (e?.preventDefault) e.preventDefault();  
     setLoading(true);  
     const param = {
-      description: text,
+      description: (forcedText !== undefined ? forcedText : text)?.trim() || '', // Use forcedText if provided
       rollcode: RollNo,
       fullname: fullName,
       org_id: org_id,
@@ -64,7 +69,6 @@ function LandingPage()
       console.log("Response Data:", response.data); 
       if (response.data.status === 1) {   
         if (response.status === 200) {
-          //alert("✅Saved successfully.");
           navigate('/typingdetails');
         } else if (response.status === "alreadyexist") {
           alert("⚠️ Duplicate entry. Please try again.");
@@ -108,9 +112,10 @@ function LandingPage()
         if (prev <= 1) {
           clearInterval(timer); 
           setEndTime(new Date().toISOString()); // Set end time
-          handleSavetext();
+          // Use latest text value from ref
+          handleSavetext(undefined, textRef.current);
           if (formRef.current) {
-            formRef.current.requestSubmit(); // ✅ Simulates button click
+            formRef.current.requestSubmit();
           } 
           return 0;
         }
@@ -200,8 +205,10 @@ function LandingPage()
   <textarea
         className="form-control"
         rows="10"
-        placeholder="Type here..."  value={text}        
+        placeholder="Type here..."  
+        value={text}
         onChange={(e) => setText(e.target.value)}
+        required // Ensure textarea is not empty
         style={{ fontSize: `${fontSizeArea}px`, textAlign: 'left',height:'350px',overflowX:'auto',overflowY: 'auto',fontFamily: selectedFont  }}
       ></textarea>
 </form>     
